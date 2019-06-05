@@ -67,14 +67,24 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 		con.disconnect();
 		
+//		StringBuilder serviceNamesJSON = new StringBuilder();
+		JSONArray serviceNamesJSON = new JSONArray();
+		
 		String responseBody = content.toString();
 		JSONObject obj = new JSONObject(responseBody);
+		JSONArray arr = obj.getJSONArray("checks");
+		
+        for (int i = 0; i < arr.length(); i++) {
+            String serviceName = arr.getJSONObject(i).getString("name");
+//            System.out.println(serviceName);
+            serviceNamesJSON.put(serviceName);
+        }
+        System.out.println(serviceNamesJSON.toString());
 		
 
 		StringBuilder fullResponseBuilder = new StringBuilder();
 
 		fullResponseBuilder.append(con.getResponseCode())
-//			.append(" ")
 			.append(con.getResponseMessage())
 			.append("\n")
 			.append(content.toString())
