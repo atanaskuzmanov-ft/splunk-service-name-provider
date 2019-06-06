@@ -10,7 +10,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,10 +29,12 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 	public String handleRequest(Object input, Context context) {
 //		context.getLogger().log("Input: " + input + "\n");
 		List<String> urls = new ArrayList<String>(Arrays.asList(UPP_PROD_PUBLISH_EU_URL, UPP_PROD_DELIVERY_EU_URL));
+		Set<String> uniqueServiceNames = new HashSet<String>();
 		String result = "";
 		try {
-			for(String u : urls)
-				result = provedeServiceNameList(u);
+			for(String u : urls) {
+				result += provedeServiceNameList(u);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -41,7 +45,6 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 		URL url;
 		StringBuilder fullResponseBuilder = new StringBuilder();
 		try {
-//			url = new URL("https://upp-prod-publish-eu.ft.com/__health");
 			url = new URL(urlString);
 
 			HttpURLConnection con;
