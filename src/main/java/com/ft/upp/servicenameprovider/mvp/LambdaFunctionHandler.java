@@ -20,7 +20,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 public class LambdaFunctionHandler implements RequestHandler<Object, String> {
-	
+
 	private static final String UPP_PROD_PUBLISH_EU_URL = "https://upp-prod-publish-eu.ft.com/__health";
 	private static final String UPP_PROD_DELIVERY_EU_URL = "https://upp-prod-delivery-eu.ft.com/__health";
 
@@ -29,20 +29,13 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 //		context.getLogger().log("Input: " + input + "\n");
 		List<String> urls = new ArrayList<String>(Arrays.asList(UPP_PROD_PUBLISH_EU_URL, UPP_PROD_DELIVERY_EU_URL));
 		Set<String> uniqueServiceNames = new HashSet<String>();
-
 		JSONArray serviceNamesJSON = new JSONArray();
+
 		try {
-			for(String u : urls) {
+			for (String u : urls) {
 				provedeServiceNameList(u).stream().forEach(s -> uniqueServiceNames.add(s));
 			}
-			
-//			for(String u : urls) {
-//				for(String s : provedeServiceNameList(u))
-//					uniqueServiceNames.add(s);
-//			}
-
-			
-			serviceNamesJSON.put(uniqueServiceNames);
+			serviceNamesJSON = new JSONArray(uniqueServiceNames);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -93,7 +86,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			in.close();
 
 			con.disconnect();
-			
+
 			serviceNamesList = extractServiceNames(content.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -104,7 +97,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 	}
 
 	public static List<String> extractServiceNames(String responseBody) {
-		 List<String> serviceNames = new ArrayList<String>();
+		List<String> serviceNames = new ArrayList<String>();
 
 		JSONObject obj = new JSONObject(responseBody);
 		JSONArray arr = obj.getJSONArray("checks");
