@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,14 +29,19 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 //		context.getLogger().log("Input: " + input + "\n");
 		List<String> urls = new ArrayList<String>(Arrays.asList(UPP_PROD_PUBLISH_EU_URL, UPP_PROD_DELIVERY_EU_URL));
 		Set<String> uniqueServiceNames = new HashSet<String>();
-//		String result = "";
+
 		JSONArray serviceNamesJSON = new JSONArray();
 		try {
 			for(String u : urls) {
-//				result += provedeServiceNameList(u);
-				for(String s : provedeServiceNameList(u))
-				uniqueServiceNames.add(s);
+				provedeServiceNameList(u).stream().forEach(s -> uniqueServiceNames.add(s));
 			}
+			
+//			for(String u : urls) {
+//				for(String s : provedeServiceNameList(u))
+//					uniqueServiceNames.add(s);
+//			}
+
+			
 			serviceNamesJSON.put(uniqueServiceNames);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -45,7 +51,6 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 	public static List<String> provedeServiceNameList(String urlString) throws IOException {
 		URL url;
-//		StringBuilder fullResponseBuilder = new StringBuilder();
 		List<String> serviceNamesList = new ArrayList<String>();
 		try {
 			url = new URL(urlString);
@@ -88,24 +93,17 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			in.close();
 
 			con.disconnect();
-
-//			String serviceNames = extractServiceNames(content.toString());
 			
 			serviceNamesList = extractServiceNames(content.toString());
-
-//			fullResponseBuilder.append(serviceNames).append("\n");
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
 		}
 
-//		return fullResponseBuilder.toString();
 		return serviceNamesList;
 	}
 
 	public static List<String> extractServiceNames(String responseBody) {
-//		JSONArray serviceNamesJSON = new JSONArray();
 		 List<String> serviceNames = new ArrayList<String>();
 
 		JSONObject obj = new JSONObject(responseBody);
@@ -113,12 +111,8 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 		for (int i = 0; i < arr.length(); i++) {
 			String serviceName = arr.getJSONObject(i).getString("name");
-//			serviceNamesJSON.put(serviceName);
 			serviceNames.add(serviceName);
 		}
-
-//		String serviceNames = serviceNamesJSON.toString();
-//		System.out.println(serviceNames);
 
 		return serviceNames;
 	}
