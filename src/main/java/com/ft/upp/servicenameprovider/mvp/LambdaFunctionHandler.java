@@ -29,12 +29,10 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 	}
 
 	public static String provedeServiceNameList() throws IOException {
-		 URL url = new URL("https://upp-prod-publish-eu.ft.com/__health");
-//		URL url = new URL("http://ft.com");
-//		URL url = new URL("http://google.co.uk");
+		URL url = new URL("https://upp-prod-publish-eu.ft.com/__health");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
-        con.setRequestProperty("Accept", "application/json");
+		con.setRequestProperty("Accept", "application/json");
 		con.setConnectTimeout(5000);
 		con.setReadTimeout(5000);
 		con.setInstanceFollowRedirects(true);
@@ -46,7 +44,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			URL newUrl = new URL(location);
 			con = (HttpURLConnection) newUrl.openConnection();
 			status = con.getResponseCode();
-		}		
+		}
 
 		Reader streamReader = null;
 
@@ -66,31 +64,51 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 		in.close();
 
 		con.disconnect();
-		
-//		StringBuilder serviceNamesJSON = new StringBuilder();
-		JSONArray serviceNamesJSON = new JSONArray();
-		
+
+//		JSONArray serviceNamesJSON = new JSONArray();
+
 		String responseBody = content.toString();
-		JSONObject obj = new JSONObject(responseBody);
-		JSONArray arr = obj.getJSONArray("checks");
-		
-        for (int i = 0; i < arr.length(); i++) {
-            String serviceName = arr.getJSONObject(i).getString("name");
-//            System.out.println(serviceName);
-            serviceNamesJSON.put(serviceName);
-        }
-        System.out.println(serviceNamesJSON.toString());
-		
+//		JSONObject obj = new JSONObject(responseBody);
+//		JSONArray arr = obj.getJSONArray("checks");
+//		
+//        for (int i = 0; i < arr.length(); i++) {
+//            String serviceName = arr.getJSONObject(i).getString("name");
+////            System.out.println(serviceName);
+//            serviceNamesJSON.put(serviceName);
+//        }
+//        System.out.println(serviceNamesJSON.toString());
+//		
+
+		String serviceNames = extractServiceNames(responseBody);
 
 		StringBuilder fullResponseBuilder = new StringBuilder();
 
 		fullResponseBuilder.append(con.getResponseCode())
-			.append(con.getResponseMessage())
-			.append("\n")
-			.append(content.toString())
-			.append("\n");
+//			.append(con.getResponseMessage())
+				.append(serviceNames)
+				.append("\n")
+				.append(content.toString())
+				.append("\n");
 
 		return fullResponseBuilder.toString();
+	}
+
+	public static String extractServiceNames(String responseBody) {
+		JSONArray serviceNamesJSON = new JSONArray();
+
+		JSONObject obj = new JSONObject(responseBody);
+		JSONArray arr = obj.getJSONArray("checks");
+
+		for (int i = 0; i < arr.length(); i++) {
+			String serviceName = arr.getJSONObject(i).getString("name");
+//            System.out.println(serviceName);
+			serviceNamesJSON.put(serviceName);
+		}
+
+		String serviceNames = serviceNamesJSON.toString();
+		System.out.println(serviceNames);
+
+		return serviceNames;
 	}
 
 }
