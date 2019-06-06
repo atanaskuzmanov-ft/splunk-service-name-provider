@@ -41,7 +41,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 		return serviceNamesJSON.toString();
 	}
 
-	public static List<String> provedeServiceNameList(String urlString) throws IOException {
+	private static List<String> provedeServiceNameList(String urlString) throws IOException {
 		URL url;
 		List<String> serviceNamesList = new ArrayList<String>();
 		try {
@@ -90,7 +90,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 		return serviceNamesList;
 	}
 
-	public static List<String> extractServiceNames(String responseBody) {
+	private static List<String> extractServiceNames(String responseBody) {
 		List<String> serviceNames = new ArrayList<String>();
 		JSONObject obj = new JSONObject(responseBody);
 		JSONArray arr = obj.getJSONArray("checks");
