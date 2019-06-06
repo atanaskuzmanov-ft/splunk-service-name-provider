@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,20 +28,25 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 //		context.getLogger().log("Input: " + input + "\n");
 		List<String> urls = new ArrayList<String>(Arrays.asList(UPP_PROD_PUBLISH_EU_URL, UPP_PROD_DELIVERY_EU_URL));
 		Set<String> uniqueServiceNames = new HashSet<String>();
-		String result = "";
+//		String result = "";
+		JSONArray serviceNamesJSON = new JSONArray();
 		try {
 			for(String u : urls) {
-				result += provedeServiceNameList(u);
+//				result += provedeServiceNameList(u);
+				for(String s : provedeServiceNameList(u))
+				uniqueServiceNames.add(s);
 			}
+			serviceNamesJSON.put(uniqueServiceNames);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result;
+		return serviceNamesJSON.toString();
 	}
 
-	public static String provedeServiceNameList(String urlString) throws IOException {
+	public static List<String> provedeServiceNameList(String urlString) throws IOException {
 		URL url;
-		StringBuilder fullResponseBuilder = new StringBuilder();
+//		StringBuilder fullResponseBuilder = new StringBuilder();
+		List<String> serviceNamesList = new ArrayList<String>();
 		try {
 			url = new URL(urlString);
 
@@ -86,31 +89,36 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 			con.disconnect();
 
-			String serviceNames = extractServiceNames(content.toString());
+//			String serviceNames = extractServiceNames(content.toString());
+			
+			serviceNamesList = extractServiceNames(content.toString());
 
-			fullResponseBuilder.append(serviceNames).append("\n");
+//			fullResponseBuilder.append(serviceNames).append("\n");
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
 		}
 
-		return fullResponseBuilder.toString();
+//		return fullResponseBuilder.toString();
+		return serviceNamesList;
 	}
 
-	public static String extractServiceNames(String responseBody) {
-		JSONArray serviceNamesJSON = new JSONArray();
+	public static List<String> extractServiceNames(String responseBody) {
+//		JSONArray serviceNamesJSON = new JSONArray();
+		 List<String> serviceNames = new ArrayList<String>();
 
 		JSONObject obj = new JSONObject(responseBody);
 		JSONArray arr = obj.getJSONArray("checks");
 
 		for (int i = 0; i < arr.length(); i++) {
 			String serviceName = arr.getJSONObject(i).getString("name");
-			serviceNamesJSON.put(serviceName);
+//			serviceNamesJSON.put(serviceName);
+			serviceNames.add(serviceName);
 		}
 
-		String serviceNames = serviceNamesJSON.toString();
-		System.out.println(serviceNames);
+//		String serviceNames = serviceNamesJSON.toString();
+//		System.out.println(serviceNames);
 
 		return serviceNames;
 	}
