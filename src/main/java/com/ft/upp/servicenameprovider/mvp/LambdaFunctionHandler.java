@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,6 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 	@Override
 	public String handleRequest(Object input, Context context) {
-//		context.getLogger().log("Input: " + input + "\n");
 		List<String> urls = new ArrayList<String>(Arrays.asList(UPP_PROD_PUBLISH_EU_URL, UPP_PROD_DELIVERY_EU_URL));
 		Set<String> uniqueServiceNames = new HashSet<String>();
 		JSONArray serviceNamesJSON = new JSONArray();
@@ -38,6 +36,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			serviceNamesJSON = new JSONArray(uniqueServiceNames);
 		} catch (IOException e) {
 			e.printStackTrace();
+			context.getLogger().log("Error: " + e.getStackTrace() + "\n");
 		}
 		return serviceNamesJSON.toString();
 	}
@@ -49,18 +48,14 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			url = new URL(urlString);
 
 			HttpURLConnection con;
-
 			con = (HttpURLConnection) url.openConnection();
-
 			con.setRequestMethod("GET");
-
 			con.setRequestProperty("Accept", "application/json");
 			con.setConnectTimeout(5000);
 			con.setReadTimeout(5000);
 			con.setInstanceFollowRedirects(true);
 
 			int status = con.getResponseCode();
-
 			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
 				String location = con.getHeaderField("Location");
 				URL newUrl = new URL(location);
@@ -69,7 +64,6 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 			}
 
 			Reader streamReader = null;
-
 			if (status > 299) {
 				streamReader = new InputStreamReader(con.getErrorStream());
 			} else {
@@ -78,13 +72,13 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 			BufferedReader in = new BufferedReader(streamReader);
 
-			String inputLine;
+			String inputLine = "";
 			StringBuffer content = new StringBuffer();
 			while ((inputLine = in.readLine()) != null) {
 				content.append(inputLine);
 			}
-			in.close();
 
+			in.close();
 			con.disconnect();
 
 			serviceNamesList = extractServiceNames(content.toString());
@@ -98,7 +92,6 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 	public static List<String> extractServiceNames(String responseBody) {
 		List<String> serviceNames = new ArrayList<String>();
-
 		JSONObject obj = new JSONObject(responseBody);
 		JSONArray arr = obj.getJSONArray("checks");
 
