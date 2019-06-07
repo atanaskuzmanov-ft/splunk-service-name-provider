@@ -21,27 +21,29 @@ public class LambdaFunctionHandlerTest {
 
 	private static Object input;
 	private static final File UPDE_HEALTH_GOOD = new File("src/test/resources/upp-prod-delivery-eu-health-good.json");
-	private TestMockServer ts;
+	private static TestMockServer ts;
 
 	@BeforeClass
 	public static void createInput() throws IOException {
 		input = null;
+		startMockServer();
 	}
 
 	@AfterClass
 	public static void cleanUp() {
+		stopMockServer();
 	}
 
 	@BeforeEach
 	public void init() {
 	}
 
-	public void startServer() {
+	public static void startMockServer() {
 		ts = new TestMockServer();
 		ts.startServer();
 	}
 
-	public void stopServer() {
+	public static void stopMockServer() {
 		ts.stopServer();
 	}
 
@@ -57,7 +59,6 @@ public class LambdaFunctionHandlerTest {
 		BufferedReader reader = new BufferedReader(fr);
 		String fileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
 
-		startServer();
 		ts.createMockServerExpectation1(fileContents);
 		fr.close();
 
@@ -65,7 +66,5 @@ public class LambdaFunctionHandlerTest {
 		List<String> result = LambdaFunctionHandler.provideServiceNameList("http://127.0.0.1:1080/test1");
 
 		Assert.assertEquals(expected, result);
-
-		stopServer();
 	}
 }
