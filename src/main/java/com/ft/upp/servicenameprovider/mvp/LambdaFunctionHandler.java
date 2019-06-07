@@ -31,7 +31,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
 		try {
 			for (String u : urls) {
-				provedeServiceNameList(u).stream().forEach(s -> uniqueServiceNames.add(s));
+				provideServiceNameList(u).stream().forEach(s -> uniqueServiceNames.add(s));
 			}
 			serviceNamesJSON = new JSONArray(uniqueServiceNames);
 		} catch (IOException e) {
@@ -41,7 +41,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 		return serviceNamesJSON.toString();
 	}
 
-	private static List<String> provedeServiceNameList(String urlString) throws IOException {
+	protected static List<String> provideServiceNameList(String urlString) throws IOException {
 		URL url;
 		List<String> serviceNamesList = new ArrayList<String>();
 		try {
