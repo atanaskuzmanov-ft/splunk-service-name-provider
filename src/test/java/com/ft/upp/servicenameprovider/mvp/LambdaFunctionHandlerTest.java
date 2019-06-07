@@ -15,17 +15,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.amazonaws.services.lambda.runtime.Context;
-
 public class LambdaFunctionHandlerTest {
 
-	private static Object input;
 	private static final File UPDE_HEALTH_GOOD = new File("src/test/resources/upp-prod-delivery-eu-health-good.json");
 	private static TestMockServer ts;
 
 	@BeforeClass
 	public static void createInput() throws IOException {
-		input = null;
 		startMockServer();
 	}
 
@@ -45,12 +41,6 @@ public class LambdaFunctionHandlerTest {
 
 	public static void stopMockServer() {
 		ts.stopServer();
-	}
-
-	private Context createContext() {
-		TestContext ctx = new TestContext();
-		ctx.setFunctionName("Provide a list of service names.");
-		return ctx;
 	}
 
 	@Test
