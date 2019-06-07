@@ -1,0 +1,54 @@
+{
+    "schemaVersion": 1,
+    "systemCode": "",
+    "name": "upp-prod-delivery-eu cluster health",
+    "description": "Health of the whole cluster served from cache.",
+    "checks": [
+        {
+            "id": "",
+            "name": "annotations-rw-neo4j",
+            "ok": true,
+            "severity": 2,
+            "businessImpact": "On its own this failure does not have a business impact but it represents a degradation of the cluster health.",
+            "technicalSummary": "The service is not healthy. Please check the panic guide. Service healthcheck: https://upp-prod-delivery-eu.ft.com/__health/__pods-health?service-name=annotations-rw-neo4j",
+            "panicGuide": "https://sites.google.com/a/ft.com/technology/systems/dynamic-semantic-publishing/coco/runbook",
+            "checkOutput": "2/2 pods available",
+            "lastUpdated": "2019-06-07T10:43:07.793334393Z"
+        },
+        {
+            "id": "",
+            "name": "api-policy-component",
+            "ok": true,
+            "severity": 2,
+            "businessImpact": "On its own this failure does not have a business impact but it represents a degradation of the cluster health.",
+            "technicalSummary": "The service is not healthy. Please check the panic guide. Service healthcheck: https://upp-prod-delivery-eu.ft.com/__health/__pods-health?service-name=api-policy-component",
+            "panicGuide": "https://sites.google.com/a/ft.com/technology/systems/dynamic-semantic-publishing/coco/runbook",
+            "checkOutput": "2/2 pods available",
+            "lastUpdated": "2019-06-07T10:42:40.585434926Z"
+        },
+        {
+            "id": "",
+            "name": "body-validation-service",
+            "ok": true,
+            "severity": 2,
+            "businessImpact": "On its own this failure does not have a business impact but it represents a degradation of the cluster health.",
+            "technicalSummary": "The service is not healthy. Please check the panic guide. Service healthcheck: https://upp-prod-delivery-eu.ft.com/__health/__pods-health?service-name=body-validation-service",
+            "panicGuide": "https://sites.google.com/a/ft.com/technology/systems/dynamic-semantic-publishing/coco/runbook",
+            "checkOutput": "2/2 pods available",
+            "lastUpdated": "2019-06-07T10:43:22.645954885Z"
+        },
+        {
+            "id": "",
+            "name": "cms-notifier",
+            "ok": true,
+            "severity": 2,
+            "businessImpact": "On its own this failure does not have a business impact but it represents a degradation of the cluster health.",
+            "technicalSummary": "The service is not healthy. Please check the panic guide. Service healthcheck: https://upp-prod-delivery-eu.ft.com/__health/__pods-health?service-name=cms-notifier",
+            "panicGuide": "https://sites.google.com/a/ft.com/technology/systems/dynamic-semantic-publishing/coco/runbook",
+            "checkOutput": "1/1 pods available",
+            "lastUpdated": "2019-06-07T10:43:06.944118048Z"
+        }
+    ],
+    "ok": false,
+    "severity": 2
+}
